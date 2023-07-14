@@ -401,18 +401,6 @@ transformCaps (GstBaseTransform * base, GstPadDirection direction,
     transformedCaps = intersection;
   }
 
-  GST_DEBUG_OBJECT (base, "current src caps: %" GST_PTR_FORMAT,
-      self->currentSrcCaps);
-  GST_DEBUG_OBJECT (base, "transformedCaps:  %" GST_PTR_FORMAT,
-      transformedCaps);
-  if (!self->currentSrcCaps) {
-    self->currentSrcCaps = gst_caps_ref (transformedCaps);
-    gst_base_transform_update_src_caps (base, transformedCaps);
-  } else if (!gst_caps_is_equal (self->currentSrcCaps, transformedCaps)) {
-    gst_caps_replace (&self->currentSrcCaps, transformedCaps);
-    gst_base_transform_update_src_caps (base, transformedCaps);
-  }
-
   GST_DEBUG_OBJECT (base, "returning %" GST_PTR_FORMAT, transformedCaps);
   return transformedCaps;
 }
