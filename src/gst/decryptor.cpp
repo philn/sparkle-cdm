@@ -323,7 +323,6 @@ spkl_decryptor_init (SparkleDecryptor * self)
       self, NULL);
   self->parsingPssh = FALSE;
 
-  self->currentSrcCaps = nullptr;
   g_cond_init (&self->cdmAttachmentCondition);
   g_mutex_init (&self->cdmAttachmentMutex);
 }
@@ -414,11 +413,8 @@ transformInPlace (GstBaseTransform * base, GstBuffer * buffer)
   /* *INDENT-ON* */
 
   if (!protectionMeta) {
-    if (!self->clearBufferNotified) {
       GST_TRACE_OBJECT (self,
           "Buffer %p does not contain protection meta, not decrypting", buffer);
-      self->clearBufferNotified = TRUE;
-    }
     return GST_FLOW_OK;
   }
 
@@ -732,9 +728,6 @@ spkl_decryptor_finalize (GObject * object)
     opencdm_destruct_system (self->system);
     self->system = nullptr;
   }
-
-  if (self->currentSrcCaps)
-    gst_caps_unref (self->currentSrcCaps);
 
   if (self->pssh)
     g_bytes_unref (self->pssh);
